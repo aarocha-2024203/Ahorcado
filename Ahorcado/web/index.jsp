@@ -1,55 +1,121 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Juego del Ahorcado</title>
-  <link rel="stylesheet" href="Styles/estilo.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Ahorcado</title>
+    <link rel="stylesheet" type="text/css" href="Styles/style.css">
 </head>
+
 <body>
-  <div class="sidebar">
-    <!-- Botones en vertical -->
-    <button id="start">Iniciar</button>
-    <button id="pause">Pausar</button>
-    <button id="restart">Reiniciar</button>
-    <button id="showHint">Mostrar pista</button>
-  </div>
-
-  <div class="container">
-    <h1>Juego del Ahorcado</h1>
-    <img id="gallows" src="Images/intento0.png" alt="Ahorcado">
-
-    <!-- Palabra oculta -->
-    <div id="word"></div>
-
-    <!-- Pistas -->
-    <div id="hint"></div>
-
-    <!-- Teclado -->
-    <div id="keyboard">
-      <div class="key-row">
-        <button class="key">Q</button><button class="key">W</button><button class="key">E</button>
-        <button class="key">R</button><button class="key">T</button><button class="key">Y</button>
-        <button class="key">U</button><button class="key">I</button><button class="key">O</button><button class="key">P</button>
-      </div>
-      <div class="key-row">
-        <button class="key">A</button><button class="key">S</button><button class="key">D</button>
-        <button class="key">F</button><button class="key">G</button><button class="key">H</button>
-        <button class="key">J</button><button class="key">K</button><button class="key">L</button><button class="key">Ã‘</button>
-      </div>
-      <div class="key-row">
-        <button class="key">Z</button><button class="key">X</button><button class="key">C</button>
-        <button class="key">V</button><button class="key">B</button><button class="key">N</button><button class="key">M</button>
-      </div>
+    <div class="wrapper">
+        <div class="form-wrapper sign-in">
+            <form action="index.html">
+                <h2>Login</h2>
+                <div class="input-group">
+                    <input type="text" required>
+                    <label for="">Nombre</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" required>
+                    <label for="">Contraseña</label>
+                </div>
+                <div class="remember">
+                    <label><input type="checkbox"> Recuérdame</label>
+                </div>
+                <button type="submit">Login</button>
+                <div class="signUp-link">
+                    <p>¿No tienes cuenta? <a href="#" class="signUpBtn-link">Registrarse</a></p>
+                </div>
+            </form>
+        </div>
+        <div class="form-wrapper sign-up">
+            <form action="#">
+                <h2>Registrarse</h2>
+                <div class="input-group">
+                    <input type="text" required>
+                    <label for="">Nombre</label>
+                </div>
+                <div class="input-group">
+                    <input type="email" required>
+                    <label for="">Correo</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" required>
+                    <label for="">Contraseña</label>
+                </div>
+                <div class="remember">
+                    <label><input type="checkbox"> Acepto los términos y condiciones</label>
+                </div>
+                <button type="submit">Registrarse</button>
+                <div class="signUp-link">
+                    <p>¿Ya tienes una cuenta? <a href="#" class="signInBtn-link">Iniciar sesión</a></p>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <!-- Mensaje -->
-    <div id="message"></div>
+    
+    <script>
+    const signUpBtnLink = document.querySelector('.signUpBtn-link');
+    const signInBtnLink = document.querySelector('.signInBtn-link');
+    const wrapper = document.querySelector('.wrapper');
 
-    <!-- Temporizador -->
-    <div id="timer">Tiempo: 60s</div>
-  </div>
+    signUpBtnLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        wrapper.classList.add('active');
+    });
 
-  <script src="./js/ahorcado.js"></script>
+    signInBtnLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        wrapper.classList.remove('active');
+    });
+
+    // Registro
+    const registerForm = document.querySelector('.sign-up form');
+    registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = registerForm.querySelector('input[type="text"]').value;
+        const email = registerForm.querySelector('input[type="email"]').value;
+        const password = registerForm.querySelector('input[type="password"]').value;
+
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+
+        // Verifica si el usuario ya existe
+        const exists = users.some(user => user.name === name);
+        if (exists) {
+            alert('El usuario ya existe.');
+            return;
+        }
+
+        users.push({ name, email, password });
+        localStorage.setItem('users', JSON.stringify(users));
+        alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
+        wrapper.classList.remove('active');
+    });
+
+    // Login
+    const loginForm = document.querySelector('.sign-in form');
+    loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = loginForm.querySelector('input[type="text"]').value;
+        const password = loginForm.querySelector('input[type="password"]').value;
+
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+
+        const validUser = users.find(user => user.name === name && user.password === password);
+
+        if (validUser) {
+            alert(`Bienvenido, ${name}!`);
+            window.location.href = 'Ahorcado.jsp'; // Redirecciona si es correcto
+        } else {
+            alert('Usuario o contraseña incorrectos.');
+        }
+    });
+</script>
+
 </body>
+
 </html>
